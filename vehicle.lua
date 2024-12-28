@@ -31,16 +31,16 @@ function Vehicle:draw()
   self.sprite.skewy = -(vely / 150) * 0.25
   self.sprite:draw(x, y, r)
 
-  love.graphics.setColor(1, 0, 0)
-  love.graphics.circle(
-    "fill",
-    self.drivetrain.rear.x,
-    self.drivetrain.rear.y, 2)
-  love.graphics.setColor(0, 1, 0)
-  love.graphics.circle(
-    "fill",
-    self.drivetrain.front.x,
-    self.drivetrain.front.y, 2)
+  -- love.graphics.setColor(1, 0, 0)
+  -- love.graphics.circle(
+  --   "fill",
+  --   self.drivetrain.rear.x,
+  --   self.drivetrain.rear.y, 2)
+  -- love.graphics.setColor(0, 1, 0)
+  -- love.graphics.circle(
+  --   "fill",
+  --   self.drivetrain.front.x,
+  --   self.drivetrain.front.y, 2)
 end
 
 function Vehicle:gui()

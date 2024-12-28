@@ -1,5 +1,7 @@
 Drivetrain = class()
 
+local js = love.joystick.getJoysticks()[1]
+
 function Drivetrain:init(params)
   self.wheelbase = params.wheelbase
   self.tire_friction = 0.8
@@ -24,6 +26,10 @@ function Drivetrain:move(dt)
     steering = steering + 1
   end
 
+  if steering == 0 then
+    steering = js:getGamepadAxis("leftx")
+  end
+
   local velx, vely = self:getVelocity()
   local speed = vec.len(velx, vely)
 
@@ -32,14 +38,25 @@ function Drivetrain:move(dt)
 
   self.front:setSteering(steering)
 
+  local power = accel_power
   if love.keyboard.isDown("w") then
-    self.rear:applyForce(accel_power)
-    self.front:applyForce(accel_power)
+    self.rear:applyForce(power)
+    self.front:applyForce(power)
+  else
+    power = accel_power * js:getGamepadAxis("triggerright")
+    self.rear:applyForce(power)
+    self.front:applyForce(power)
   end
-  if love.keyboard.isDown("s") then
+  if love.keyboard.isDown("s") or js:getGamepadAxis("triggerleft") ~= 0 then
     self.rear:applyBrakes()
     self.front:applyBrakes()
   end
+
+  local vibration_speed = vec.len(self:getVelocity()) / 350
+  vibration_speed = vibration_speed + (power / accel_power) * 0.1
+  vibration_speed = vibration_speed + 0.05
+  vibration_speed = mathx.clamp(vibration_speed, 0, 1)
+  js:setVibration(vibration_speed, vibration_speed)
 
   self.rear:update(dt)
   self.front:update(dt)
