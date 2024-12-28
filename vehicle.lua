@@ -47,7 +47,7 @@ function Vehicle:gui()
   love.graphics.setColor(1, 1, 1)
 
   local velx, vely = self.drivetrain:getVelocity()
-  local speed = math.floor(vec.len(velx, vely) / 20 * 2.75)
+  local speed = math.floor(vec.len(velx, vely) / px_per_meter)
   love.graphics.print(("%d KM/H"):format(speed), 10, 10)
   love.graphics.print(("%d MPH"):format(speed * 0.6213712), 10, 30)
 end

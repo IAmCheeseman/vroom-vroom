@@ -1,5 +1,7 @@
 love.graphics.setDefaultFilter("nearest", "nearest")
 
+px_per_meter = 20 / 2.75
+
 class = require("class")
 require("viewport")
 require("mathx")
