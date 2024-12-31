@@ -26,14 +26,14 @@ function Drivetrain:move(dt)
     steering = steering + 1
   end
 
-  if steering == 0 then
+  if steering == 0 and js then
     steering = js:getGamepadAxis("leftx")
   end
 
   local velx, vely = self:getVelocity()
   local speed = vec.len(velx, vely)
 
-  local steering_coeff = math.max(1 - (speed / 400)^2, 0.2)
+  local steering_coeff = math.max(1 - (speed / 400) ^ 2, 0.2)
   steering = steering * math.rad(20) * steering_coeff
 
   self.front:setSteering(steering)
@@ -43,20 +43,22 @@ function Drivetrain:move(dt)
     self.rear:applyForce(power)
     self.front:applyForce(power)
   else
-    power = accel_power * js:getGamepadAxis("triggerright")
+    power = accel_power * ((js and js:getGamepadAxis("triggerright")) or 0)
     self.rear:applyForce(power)
     self.front:applyForce(power)
   end
-  if love.keyboard.isDown("s") or js:getGamepadAxis("triggerleft") ~= 0 then
+  if love.keyboard.isDown("s") or (js and (js:getGamepadAxis("triggerleft") ~= 0)) then
     self.rear:applyBrakes()
     self.front:applyBrakes()
   end
 
-  local vibration_speed = vec.len(self:getVelocity()) / 350
-  vibration_speed = vibration_speed + (power / accel_power) * 0.1
-  vibration_speed = vibration_speed + 0.05
-  vibration_speed = mathx.clamp(vibration_speed, 0, 1)
-  js:setVibration(vibration_speed, vibration_speed)
+  if js then
+    local vibration_speed = vec.len(self:getVelocity()) / 350
+    vibration_speed = vibration_speed + (power / accel_power) * 0.1
+    vibration_speed = vibration_speed + 0.05
+    vibration_speed = mathx.clamp(vibration_speed, 0, 1)
+    js:setVibration(vibration_speed, vibration_speed)
+  end
 
   self.rear:update(dt)
   self.front:update(dt)
