@@ -42,14 +42,18 @@ function Drivetrain:move(dt)
   if love.keyboard.isDown("w") then
     self.rear:applyForce(power)
     self.front:applyForce(power)
-  else
-    power = accel_power * ((js and js:getGamepadAxis("triggerright")) or 0)
+  elseif js then
+    power = accel_power * js:getGamepadAxis("triggerright")
     self.rear:applyForce(power)
     self.front:applyForce(power)
   end
-  if love.keyboard.isDown("s") or (js and (js:getGamepadAxis("triggerleft") ~= 0)) then
+  if love.keyboard.isDown("s") then
     self.rear:applyBrakes()
     self.front:applyBrakes()
+  elseif js then
+    local amount = js:getGamepadAxis("triggerleft")
+    self.rear:applyBrakes(amount)
+    self.front:applyBrakes(amount)
   end
 
   if js then
